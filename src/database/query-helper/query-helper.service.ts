@@ -20,6 +20,7 @@ export class QueryHelperService<T> {
     return (await this.getAll()).filter((item) => item[key] === value);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async search(queryObject: Partial<T>) {
     /**
      * Process and filter using each key
