@@ -30,21 +30,5 @@ export class QueryHelperService<T> {
      *        if it's in pair of two, look for exact match
      *    Any other condition???
      */
-
-    // Assign route
-    const req = {
-      query: {},
-    };
-    const filters = req.query;
-    const filteredUsers = posts.filter((user) => {
-      let isValid = true;
-      for (const key in filters) {
-        console.log(key, user[key], filters[key]);
-        isValid = isValid && user[key] == filters[key];
-      }
-      return isValid;
-    });
-
-    return filteredUsers;
   }
 }
