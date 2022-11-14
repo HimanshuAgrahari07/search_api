@@ -3,17 +3,19 @@ import { posts } from '../tables/table.post';
 import { TTable } from './query-helper.modal';
 
 @Injectable()
-export class QueryHelperService<T> {
-  table: T[];
+export class QueryHelperService<T extends object> {
+  tableData: T[];
 
-  setTable(table: TTable) {
+  setTable(table: TTable | null, data?: T[]) {
     if (table === 'post') {
-      this.table = posts as T[];
+      this.tableData = posts as T[];
+    } else {
+      this.tableData = data;
     }
   }
 
   async getAll(): Promise<T[]> {
-    return this.table;
+    return this.tableData;
   }
 
   async getByKey(key: keyof T, value: unknown): Promise<T[]> {
@@ -21,7 +23,7 @@ export class QueryHelperService<T> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async search(queryObject: Partial<T>) {
+  async search(queryObject: { [key in keyof T]?: any }): Promise<T[]> {
     /**
      * Process and filter using each key
      *    if any key has comma, i.e OR condition
@@ -31,5 +33,7 @@ export class QueryHelperService<T> {
      *        if it's in pair of two, look for exact match
      *    Any other condition???
      */
+
+    return this.tableData;
   }
 }
