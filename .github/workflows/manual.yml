@@ -1,34 +1,42 @@
-# This is a basic workflow that is manually triggered
+name: Production Portal Deployment
 
-name: Manual workflow
-
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Run workflow manually (without waiting for the cron to be called), through the Github Actions Workflow page directly
     # Inputs the workflow accepts.
     inputs:
-      name:
+      bucketName:
         # Friendly description to be shown in the UI instead of 'name'
         description: 'Person to greet'
         # Default value if no value is explicitly provided
         default: 'World'
         # Input has to be provided for the workflow to run
         required: true
-  
-  push:
-    tags:
-      - v*
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+        
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.name }}"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies production dependencies
+        run: npm install --omit=dev
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        if: success()
+        run: echo "Uploading files to s3 in bucket ${{ github.event.inputs.bucketName }}"
