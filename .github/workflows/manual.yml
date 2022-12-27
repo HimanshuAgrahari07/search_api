@@ -2,15 +2,6 @@ name: Production Portal Deployment
 
 on:
   workflow_dispatch: # Run workflow manually (without waiting for the cron to be called), through the Github Actions Workflow page directly
-    # Inputs the workflow accepts.
-    inputs:
-      bucketName:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
         
 jobs:
   deploy:
@@ -33,4 +24,4 @@ jobs:
 
       - name: Deploy
         if: success()
-        run: echo "Uploading files to s3 in bucket ${{ github.event.inputs.bucketName }}"
+        run: echo "Uploading files to s3 in bucket"
