@@ -17,7 +17,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies production dependencies
-        run: npm install --omit=dev
+        run: npm install
 
       - name: Build
         run: npm run build
